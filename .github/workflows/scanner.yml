@@ -1,0 +1,31 @@
+name: Python Dependencies Security Scan
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "requirements.txt"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "requirements.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  security-scan:
+    name: Trivy Python Dependencies Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          scan-type: "fs"
+          scanners: "vuln"
+          severity: "HIGH,CRITICAL,MEDIUM"
+          exit-code: "1"
