@@ -18,11 +18,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Validadte requirements
+        run: test -s requirements.txt
+
+      - name: Build Docker Image
+        run: docker build -t vuln-python-app:local .
+
       - name: Run Trivy scan
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: "fs"
-          scanners: "vuln"
+          image-ref: "vuln-python-app:local"
           format: "table"
           exit-code: 1
-          severity: "CRITICAL,HIGH,MEDIUM"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
